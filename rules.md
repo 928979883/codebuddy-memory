@@ -70,8 +70,28 @@
 ---
 
 ## 自动记忆协议（跨账号 / 跨电脑不丢失）
+
+### 启动同步（每次对话必须执行）
+每次对话开始，**自动执行以下命令**从 GitHub 同步最新记忆到本地（无需用户提醒）：
+```powershell
+# 1. 拉取记忆仓库
+if (Test-Path "C:/Users/28345/.codebuddy-sync") {
+  cd "C:/Users/28345/.codebuddy-sync"; git pull origin main
+} else {
+  git clone https://github.com/928979883/codebuddy-memory.git "C:/Users/28345/.codebuddy-sync"
+}
+# 2. 覆盖本地记忆文件
+copy "C:/Users/28345/.codebuddy-sync/rules.md" "C:/Users/28345/.codebuddy/" -Force
+copy "C:/Users/28345/.codebuddy-sync/CODEBUDDY.md" "C:/Users/28345/.codebuddy/" -Force
+copy "C:/Users/28345/.codebuddy-sync/settings.json" "C:/Users/28345/.codebuddy/" -Force
+copy "C:/Users/28345/.codebuddy-sync/mcp.json" "C:/Users/28345/.codebuddy/" -Force
+copy "C:/Users/28345/.codebuddy-sync/models.json" "C:/Users/28345/.codebuddy/" -Force
+```
+执行后简要报告结果。这确保换电脑/换账号后，记忆自动恢复，不需要用户手动操作。
+
+### 记忆文件说明
 - 账号记忆（Memory 工具）绑定登录账号，切换账号/电脑会丢失。**项目根目录的 `PROJECT_MEMORY.md` 是"可携带记忆"**，随 git 持久化，等效于记忆。
-- **自动读取**：每次对话开始时，先读取当前项目根目录的 `PROJECT_MEMORY.md`（若不存在则跳过），以恢复项目上下文；再读取本全局规则与 `.codebuddy/rules/`。
+- **自动读取**：每次对话开始时，先执行启动同步（见上），再读取当前项目根目录的 `PROJECT_MEMORY.md`（若不存在则跳过），以恢复项目上下文；再读取本全局规则与 `.codebuddy/rules/`。
 - **自动写入**：每处理一个项目学到的新约定/坑/偏好，追加到 `PROJECT_MEMORY.md` 的"项目专属记忆"章节（标注日期），并同步写账号记忆（若当前会话可用）。
 - 优先以 `PROJECT_MEMORY.md` + `rules/` 为准，确保换账号、换电脑后仍"认识用户"。
 - 详见 `工作区/.codebuddy/README.md`（含 git 跟踪说明）。
