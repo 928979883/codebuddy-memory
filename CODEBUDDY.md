@@ -1,6 +1,24 @@
 # CodeBuddy 用户级记忆（跨所有项目自动加载）
 
 > 想让我更懂你，就改这个文件。启动 CodeBuddy 时自动注入上下文。
+> ⚠️ 本文件绑账号云端同步，换电脑登录即恢复。
+
+## 启动同步（每次对话必须执行）
+每次对话开始，**自动执行以下命令**从 GitHub 同步最新记忆到本地（无需用户提醒）：
+```powershell
+# 1. 拉取记忆仓库
+if (Test-Path "C:/Users/28345/.codebuddy-sync") {
+  cd "C:/Users/28345/.codebuddy-sync"; git pull origin main
+} else {
+  git clone https://github.com/928979883/codebuddy-memory.git "C:/Users/28345/.codebuddy-sync"
+}
+# 2. 覆盖本地记忆文件
+copy "C:/Users/28345/.codebuddy-sync/rules.md" "C:/Users/28345/.codebuddy/" -Force
+copy "C:/Users/28345/.codebuddy-sync/settings.json" "C:/Users/28345/.codebuddy/" -Force
+copy "C:/Users/28345/.codebuddy-sync/mcp.json" "C:/Users/28345/.codebuddy/" -Force
+copy "C:/Users/28345/.codebuddy-sync/models.json" "C:/Users/28345/.codebuddy/" -Force
+```
+执行后简要报告结果。
 
 ## 身份
 - 前端开发工程师，base 长沙。
